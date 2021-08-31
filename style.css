@@ -1,0 +1,143 @@
+@import "lesshat";
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  font-family: sans-serif; /* Change your font family */
+}
+* h1 {
+  color: #a962fa;
+  text-align: center;
+  -webkit-text-stroke: 1px black;
+}
+.content-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  min-width: 400px;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid black;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.content-table thead tr {
+  background-color: #a962fa;
+  color: #ffffff;
+  text-align: left;
+  font-weight: bold;
+}
+
+.content-table th,
+.content-table td {
+  padding: 12px 15px;
+}
+
+.content-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.content-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.content-table tbody tr:last-of-type {
+  border-bottom: 2px solid #a962fa;
+}
+
+/* .content-table tbody tr.active-row {
+  font-weight: bold;
+  color: #009879;
+} */
+
+span {
+  display: inline-block;
+  font-weight: bolder;
+  animation: mover 6s linear infinite;
+  color: #fff;
+}
+
+@keyframes mover {
+  0% {
+    text-shadow: 0 0 30px rgba(0, 0, 0, 0);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(0, 0, 0, 0.945);
+    transform: translateY(30px);
+  }
+  100% {
+    text-shadow: 0 0 30px rgba(0, 0, 0, 0);
+  }
+}
+span:nth-child(1) {
+  animation-delay: 0.5s;
+}
+span:nth-child(2) {
+  animation-delay: 1s;
+}
+span:nth-child(3) {
+  animation-delay: 1.5s;
+}
+span:nth-child(4) {
+  animation-delay: 2s;
+}
+span:nth-child(5) {
+  animation-delay: 2.5s;
+}
+span:nth-child(6) {
+  animation-delay: 3s;
+}
+span:nth-child(7) {
+  animation-delay: 3.5s;
+}
+span:nth-child(8) {
+  animation-delay: 4s;
+}
+.tooltip {
+  position: absolute;
+  top: 550px;
+  right: 180px;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 280px;
+  height: 90px;
+  background-color: rgb(0, 0, 0);
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 19%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgb(129, 115, 255) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
