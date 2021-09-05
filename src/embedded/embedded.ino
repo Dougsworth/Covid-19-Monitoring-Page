@@ -55,7 +55,7 @@ Ultrasonic ultrasonic(Trig, Echo);
 File myFile;
 
 //Buzzer
-#define buzzer    A3
+#define buzzer    A1
 #define frequency 2500
 
 //RG LED
