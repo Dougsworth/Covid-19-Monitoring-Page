@@ -21,7 +21,7 @@
       <a href class="logo"'><span class="fas fa-virus fa-2x" style= 'color: #a962fa' ></span></a>
       
     </header>
-    <h1>Covid-19 Temperature Monitoring System</h1>
+    <h1>UWI, Mona - IEEE Student Branch</h1>
     <div class="text-box">
       <span>C</span>
       <span>O</span>
@@ -36,62 +36,95 @@
 
     <table class="content-table">
       <thead>
-        <tr>
+        <tr class="table-heading">
           <th>I.D #</th>
+          <th>Location</th>
           <th>Temperature</th>
+          <th>Status</th>
           <th>Date</th>
+          <th>Time</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
+      <tbody class="table-body">
+        <tr class="table-row"> 
           <td>1</td>
+          <td>Engineering</td>
           <td>27.2</td>
+          <td>Normal</td>
           <td>August 26,2021</td>
+          <td>12:02</td>
         </tr>
-        <tr class="active-row">
+        <tr class="table-row">
           <td>2</td>
-          <td>27.6</td>
+          <td>Engineering</td>
+          <td>37.2</td>
+          <td>Abnormal</td>
           <td>August 26,2021</td>
+          <td>1:02</td>
         </tr>
-        <tr>
+        <tr class="table-row"> 
           <td>3</td>
-          <td>24.3</td>
-          <td>August 2,2021</td>
+          <td>SciTech</td>
+          <td>27.2</td>
+          <td>Normal</td>
+          <td>August 26,2021</td>
+          <td>1:16</td>
         </tr>
-        <tr>
+        <tr class="table-row"> 
           <td>4</td>
-          <td>22.6</td>
+          <td>Engineering</td>
+          <td>27.2</td>
+          <td>Normal</td>
           <td>August 26,2021</td>
+          <td>1:16</td>
         </tr>
-        <tr>
+        <tr class="table-row"> 
           <td>5</td>
-          <td>23.1</td>
+          <td>SoSci</td>
+          <td>27.2</td>
+          <td>Normal</td>
           <td>August 26,2021</td>
+          <td>1:46</td>
         </tr>
-        <tr>
+        <tr class="table-row"> 
           <td>6</td>
-          <td>27.3</td>
+          <td>Engineering</td>
+          <td>27.2</td>
+          <td>Normal</td>
           <td>August 26,2021</td>
+          <td>2:06</td>
         </tr>
-        <tr>
+        <tr class="table-row"> 
           <td>7</td>
-          <td>25.8</td>
+          <td>Law</td>
+          <td>33.6</td>
+          <td>Abnormal</td>
           <td>August 26,2021</td>
+          <td>2:16</td>
         </tr>
-        <tr>
+        <tr class="table-row"> 
           <td>8</td>
-          <td>28.2</td>
+          <td>Law</td>
+          <td>27.2</td>
+          <td>Normal</td>
           <td>August 26,2021</td>
+          <td>2:33</td>
         </tr>
-        <tr>
+        <tr class="table-row"> 
           <td>9</td>
-          <td>22.6</td>
+          <td>MedSci</td>
+          <td>27.2</td>
+          <td>Normal</td>
           <td>August 26,2021</td>
+          <td>2:40</td>
         </tr>
-        <tr>
+        <tr class="table-row"> 
           <td>10</td>
-          <td>24.5</td>
+          <td>Humanities</td>
+          <td>27.2</td>
+          <td>Normal</td>
           <td>August 26,2021</td>
+          <td>2:58</td>
         </tr>
       </tbody>
     </table>
@@ -104,6 +137,47 @@
       </div>
 
     <!-- custom js file link -->
-    <script src="scripts/script.js"></script>
+    <script>
+      function generateTableRow(id){
+        // Create the new row to be added to the table
+        var tableRow = document.createElement("TR");
+        tableRow.classList.add("table-row");
+
+        //Populate the elements in the row
+        var tdID = document.createElement("TD");
+        tdID.innerHTML = id;
+
+        var tdLocation = document.createElement("TD");
+        tdLocation.innerHTML = "Engineering";
+
+        var tdTemperature = document.createElement("TD");
+        tdTemperature.innerHTML = "28.5";
+
+        var tdStatus = document.createElement("TD");
+        tdStatus.innerHTML = "Normal";
+
+        var tdDate = document.createElement("TD");
+        tdDate.innerHTML = "August 26,2021";
+
+        var tdTime = document.createElement("TD");
+        tdTime.innerHTML = "3:59";
+
+        tableRow.append(tdID);
+        tableRow.append(tdLocation);
+        tableRow.append(tdTemperature);
+        tableRow.append(tdStatus);
+        tableRow.append(tdDate);
+        tableRow.append(tdTime);
+        
+        return tableRow;
+      }
+
+      var tableBody = document.querySelector(".table-body");
+      var IDS = ["11", "12", "13", "14", "15"];
+
+      IDS.forEach(id => {
+        tableBody.append(generateTableRow(id));
+      });
+    </script>
   </body>
 </html>
