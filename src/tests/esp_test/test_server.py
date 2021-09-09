@@ -7,7 +7,18 @@ CORS(app)
 @app.route('/test', methods=['POST'])
 def test():
     if request.method == 'POST':
-        print(request.json['temperature'], request.json['year'], request.json['month'], request.json['day'], request.json['hour'], request.json['minute'], request.json['second'])
+
+        embedded_data = {
+            "temperature": request.json['temperature'],
+            "year": request.json['year'],
+            "month": request.json['month'],
+            "day": request.json['day'],
+            "hour": request.json['hour'],
+            "minute": request.json['minute'],
+            "second": request.json['second']
+        }
+
+        print(embedded_data)
 
         return jsonify(request.json)
 
