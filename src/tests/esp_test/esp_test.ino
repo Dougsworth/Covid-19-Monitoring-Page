@@ -1,8 +1,11 @@
 #define DEBUG true
 
+#define NETWORK_NAME "networkName"
+#define NETWORK_PASSWORD "networkPassword"
+
 void espSetup(){
-  String networkName = "networkName";
-  String networkPassword = "networkPassword";
+  String networkName = NETWORK_NAME;
+  String networkPassword = NETWORK_PASSWORD;
   
   // Reset the esp in case of power outage
   sendData("AT+RST\r\n", 10000, DEBUG);
@@ -68,10 +71,32 @@ String generateCIPSend(int requestLength){
   return cipSend;
 }
 
-String generatePost(int temp, int y, int m, int d){
-  String post = "{\"temperature\":\""+ String(temp)+ "\", \"year\":\"" +String(y)+ "\", \"month\":\""+String(m)+ "\", \"day\":\""+String(d)+"\"}\r\n\r\n";
+String generatePost(int temp, int y, int m, int d, int h, int mn, int s){
+  String post = "{\"temperature\":\""+ String(temp)+ "\", \"year\":\"" +String(y)+ "\", \"month\":\""+String(m)+ "\", \"day\":\""+String(d)+"\", \"hour\":\"" +String(hr)+ "\", \"min\":\""+String(mn)+ "\", \"sec\":\""+String(s)+"\"}\r\n\r\n";
   Serial.println(post);
   return post;
+}
+
+void postToServer(){
+  // Get relevant data from the sensors
+  int temp = 69;
+  int year = 2021;
+  int month = 8;
+  int day = 30;
+  int hour = 6;
+  int min = 30;
+  int sec = 29;
+
+  // Prepare the structure of the POST request
+  sendData("AT+CIPSTART=\"TCP\",\"192.168.1.12\",5000\r\n", 1500, DEBUG);
+  String postData = generatePost(temp, year, month, day, hour, min, sec);
+  String postRequest = generatePostRequest("test", "5000", postData.length(), postData);  
+  String cipSend = generateCIPSend(postRequest.length());
+
+  // Make the POST request
+  sendData(cipSend, 1000, DEBUG);
+  Serial.println(postRequest);
+  sendData(postRequest, 5000, DEBUG);
 }
 
 void setup() {
@@ -83,17 +108,5 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int temp = 69;
-  int year = 2021;
-  int month = 8;
-  int day = 30;
-
-  sendData("AT+CIPSTART=\"TCP\",\"192.168.1.12\",5000\r\n", 1500, DEBUG);
-  String postData = generatePost(temp, year, month, day);
-  String postRequest = generatePostRequest("test", "5000", postData.length(), postData);  
-  String cipSend = generateCIPSend(postRequest.length());
-
-  sendData(cipSend, 1000, DEBUG);
-  Serial.println(postRequest);
-  sendData(postRequest, 5000, DEBUG);
+  postToServer();
 }

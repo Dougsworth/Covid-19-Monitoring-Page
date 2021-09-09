@@ -7,7 +7,7 @@ CORS(app)
 @app.route('/test', methods=['POST'])
 def test():
     if request.method == 'POST':
-        print(request.json['temperature'], request.json['year'])
+        print(request.json['temperature'], request.json['year'], request.json['month'], request.json['day'], request.json['hour'], request.json['minute'], request.json['second'])
 
         return jsonify(request.json)
 
