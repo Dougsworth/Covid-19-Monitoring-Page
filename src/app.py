@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session, flash
 from marshmallow import Schema, fields, ValidationError
 from flask_pymongo import PyMongo
 from flask_cors import CORS
@@ -15,6 +15,10 @@ app.config["MONGO_URI"] = "mongodb+srv://{}:{}@cluster0.weykq.mongodb.net/monday
 mongo = PyMongo(app)
 CORS(app)
 
+class AuthenticationSchema(Schema):
+    username = fields.String(required=True)
+    password = fields.String(required=True)
+
 class DataSchema(Schema):
     temperature = fields.Float(required=True)
     status = fields.String(required=True)
@@ -27,6 +31,70 @@ class DataSchema(Schema):
 
 ###################### APP #############################
 @app.route('/')
+def home():
+    return redirect(url_for('login'))
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == "POST":
+        try:
+            # Check to see if the username is in the database already
+            u_name = request.form['username']
+            auth = mongo.db.authentications.find_one({"username": u_name})
+            if auth is not None:
+                flash("Username is already taken", "info")
+                return render_template('signup.html')         
+            else:
+                # Store the username and password in a database, then redirect to 
+                # the login page
+                auth_data =  AuthenticationSchema().load(request.form)
+                print(auth_data)
+                mongo.db.authentications.insert_one(auth_data)
+                return redirect(url_for('login'))
+        except ValidationError as e:
+            return e.messages, 400
+    else:
+        return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        try:
+            u_name = request.form["username"]
+            p_word = request.form["password"]
+            print(u_name, p_word)
+
+            try:
+                auth = mongo.db.authentications.find_one({"username": u_name})
+
+                if p_word == auth['password']:
+                    print('Correct information')
+                    session['user'] = u_name
+                    return redirect(url_for('index'))
+                else:
+                    # Incorrect password
+                    print('Incorrect password')
+                    flash('The password you entered was incorrect', "info")
+                    return render_template('login.html')
+            except:
+                # Incorrect username
+                print('Incorrect username')
+                flash('The username you entered was incorrect', "info")
+                return render_template('login.html')
+        except ValidationError as e:
+            return e.messages, 400
+    else:
+        if "user" in session:
+            return redirect(url_for('index'))
+
+        return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('login'))
+
+@app.route('/index')
 def index():
     return render_template('index.html')
 
@@ -45,7 +113,6 @@ def test():
             return "Normal"
 
     if request.method == 'POST':
-
         # Format the data into a dictionary
         embedded_data = {
             "temperature": request.json['temperature'],

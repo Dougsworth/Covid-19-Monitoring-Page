@@ -1,28 +1,27 @@
-function generateTableRow(id){
+const serverURL = document.domain;
+const port = location.port;
+
+function generateTableRow(data){
     // Create the new row to be added to the table
     var tableRow = document.createElement("TR");
     tableRow.classList.add("table-row");
 
     //Populate the elements in the row
-    var tdID = document.createElement("TD");
-    tdID.innerHTML = id;
-
     var tdLocation = document.createElement("TD");
     tdLocation.innerHTML = "Engineering";
 
     var tdTemperature = document.createElement("TD");
-    tdTemperature.innerHTML = "28.5";
+    tdTemperature.innerHTML = data.temperature;
 
     var tdStatus = document.createElement("TD");
-    tdStatus.innerHTML = "Normal";
+    tdStatus.innerHTML = data.status;
 
     var tdDate = document.createElement("TD");
-    tdDate.innerHTML = "August 26,2021";
+    tdDate.innerHTML = data.day +"/"+ data.month +"/"+ data.year;
 
     var tdTime = document.createElement("TD");
-    tdTime.innerHTML = "3:59";
+    tdTime.innerHTML = data.hour +":"+ data.minute +"."+ data.second;
 
-    tableRow.append(tdID);
     tableRow.append(tdLocation);
     tableRow.append(tdTemperature);
     tableRow.append(tdStatus);
@@ -32,9 +31,23 @@ function generateTableRow(id){
     return tableRow;
 }
 
-var tableBody = document.querySelector(".table-body");
-var IDS = ["11", "12", "13", "14", "15"];
+var dataPath = "http://" + serverURL + ":"+ port +"/api/data";
+function getTableData(){
+    console.log(dataPath);
+    return fetch(dataPath).then(res => res.json()).then(json => json);
+}
 
-IDS.forEach(id => {
-    tableBody.append(generateTableRow(id));
-});
+async function displayTableData(){
+    let rowData = await getTableData();  
+    console.log(rowData);
+
+    rowData.forEach(row => {
+        //console.log(patient.p_username);
+        var content = document.querySelector(".table-body");
+        content.append(generateTableRow(row));        
+    });
+}
+
+window.onload = function(){
+    displayTableData();
+}
