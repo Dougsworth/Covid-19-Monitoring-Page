@@ -19,6 +19,10 @@ class AuthenticationSchema(Schema):
     username = fields.String(required=True)
     password = fields.String(required=True)
 
+class LocationSchema(Schema):
+    location = fields.String(required=True)
+    id = fields.String(required=True)
+
 class DataSchema(Schema):
     temperature = fields.Float(required=True)
     status = fields.String(required=True)
@@ -28,6 +32,7 @@ class DataSchema(Schema):
     hour = fields.Integer(required=True)
     minute = fields.Integer(required=True)
     second = fields.Integer(required=True)
+    id = fields.String(required=True)
 
 ###################### APP #############################
 @app.route('/')
@@ -98,11 +103,34 @@ def logout():
 def index():
     return render_template('index.html')
 
+@app.route('/location', methods=['GET', 'POST'])
+def location():
+    if request.method == 'POST':
+        location_data = {
+            "location": request.form['location'],
+            "id": request.form['id']
+        }
+
+        # Upload the data to the database
+        data = LocationSchema().load(location_data)
+        location_id = mongo.db.locations.insert_one(data).inserted_id
+        location_data = mongo.db.locations.find_one(data)
+
+        return render_template('location.html')
+    else:
+        return render_template('location.html')
+    
 ################# API ENDPOINTS ########################
 @app.route('/api/data')
 def return_table_data():
     table_data = mongo.db.datas.find()
     return jsonify(loads(dumps(table_data))) 
+    
+
+@app.route('/api/location/<id>')
+def get_location_data(id):
+    location_data = mongo.db.locations.find({"id": id})
+    return jsonify(loads(dumps(location_data)))
 
 @app.route('/api/esp', methods=['POST'])
 def test():
@@ -122,7 +150,8 @@ def test():
             "day": request.json['day'],
             "hour": request.json['hour'],
             "minute": request.json['minute'],
-            "second": request.json['second']
+            "second": request.json['second'],
+            "id": request.json['id']
         }
 
         # Upload the data to the database
@@ -136,6 +165,6 @@ def test():
 if __name__ == "__main__":
     app.run(
         debug=True,
-        host="192.168.1.10",
+        host="192.168.1.8",
         port=5000
     )
