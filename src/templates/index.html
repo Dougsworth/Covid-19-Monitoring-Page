@@ -43,8 +43,11 @@
     <table class="content-table">
       <thead>
         <tr class="table-heading">
+          <th>ID</th>
           <th>Location</th>
           <th>Temperature</th>
+          <th>Distance</th>
+          <th>Ambient Temp.</th>
           <th>Status</th>
           <th>Date</th>
           <th>Time</th>
@@ -72,11 +75,20 @@ function generateTableRow(data, loc){
     tableRow.classList.add("table-row");
 
     //Populate the elements in the row
+    var tdID = document.createElement("TD");
+    tdID.innerHTML = data.id;
+
     var tdLocation = document.createElement("TD");
     tdLocation.innerHTML = loc;
 
     var tdTemperature = document.createElement("TD");
     tdTemperature.innerHTML = data.temperature;
+
+    var tdDistance = document.createElement("TD");
+    tdDistance.innerHTML = data.distance;
+
+    var tdAmbient = document.createElement("TD");
+    tdAmbient.innerHTML = data.ambient;
 
     var tdStatus = document.createElement("TD");
     tdStatus.innerHTML = data.status;
@@ -87,8 +99,11 @@ function generateTableRow(data, loc){
     var tdTime = document.createElement("TD");
     tdTime.innerHTML = data.hour +":"+ data.minute +"."+ data.second;
 
+    tableRow.append(tdID);
     tableRow.append(tdLocation);
     tableRow.append(tdTemperature);
+    tableRow.append(tdDistance);
+    tableRow.append(tdAmbient);
     tableRow.append(tdStatus);
     tableRow.append(tdDate);
     tableRow.append(tdTime);
@@ -98,16 +113,15 @@ function generateTableRow(data, loc){
 
 var locationPath = "http://" + serverURL + ":"+ port + "/api/location/";
 function getLocation(id){
-    console.log(locationPath+id)
+    //console.log(locationPath+id)
     let data = fetch(locationPath+id).then(res => res.json()).then(json => json);
-    // console.log(id, data)
-    return data;
+    return data
 }
 
 async function getLocationData(id){
     let record = await getLocation(id);
-    console.log(record[0].location)
-    return record[0].location;
+    console.log(record.location)
+    return record.location;
 }
 
 var dataPath = "http://" + serverURL + ":"+ port +"/api/data";
@@ -121,8 +135,8 @@ async function displayTableData(){
     console.log(rowData);
 
     rowData.forEach(row => {
-        console.log("ID:", row.id);
-        getLocationData(row.id).then(res => {
+        console.log("ID:", row.mac);
+        getLocationData(row.mac).then(res => {
             var content = document.querySelector(".table-body");
             content.append(generateTableRow(row, res));   
         });      
@@ -130,12 +144,7 @@ async function displayTableData(){
 }
 
 window.onload = function(){
-    displayTableData();
-
-    let btn = document.getElementById("button").onclick = function(){
-      location.href("http://" + serverURL + ":" + port + "/location");
-    };
-    
+    displayTableData();    
 }
     </script>
   </body>

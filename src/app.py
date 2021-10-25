@@ -21,10 +21,11 @@ class AuthenticationSchema(Schema):
 
 class LocationSchema(Schema):
     location = fields.String(required=True)
-    id = fields.String(required=True)
+    mac = fields.String(required=True)
 
 class DataSchema(Schema):
     temperature = fields.Float(required=True)
+    ambient = fields.Float(required=True)
     status = fields.String(required=True)
     year = fields.Integer(required=True)
     month = fields.Integer(required=True)
@@ -32,7 +33,11 @@ class DataSchema(Schema):
     hour = fields.Integer(required=True)
     minute = fields.Integer(required=True)
     second = fields.Integer(required=True)
-    id = fields.String(required=True)
+    distance = fields.Float(required=True)
+    mac = fields.String(required=True)
+    id = fields.Integer(required=True)
+
+id = 0 
 
 ###################### APP #############################
 @app.route('/')
@@ -68,7 +73,7 @@ def login():
             u_name = request.form["username"]
             p_word = request.form["password"]
             print(u_name, p_word)
-
+            
             try:
                 auth = mongo.db.authentications.find_one({"username": u_name})
 
@@ -108,7 +113,7 @@ def location():
     if request.method == 'POST':
         location_data = {
             "location": request.form['location'],
-            "id": request.form['id']
+            "mac": request.form['mac']
         }
 
         # Upload the data to the database
@@ -129,7 +134,9 @@ def return_table_data():
 
 @app.route('/api/location/<id>')
 def get_location_data(id):
-    location_data = mongo.db.locations.find({"id": id})
+    print(id)
+    location_data = mongo.db.locations.find_one({"mac": id})
+    print(loads(dumps(location_data)))
     return jsonify(loads(dumps(location_data)))
 
 @app.route('/api/esp', methods=['POST'])
@@ -141,9 +148,12 @@ def test():
             return "Normal"
 
     if request.method == 'POST':
+        global id
+        id += 1
         # Format the data into a dictionary
         embedded_data = {
             "temperature": request.json['temperature'],
+            "ambient": request.json['ambient'],
             "status": fever_or_not(request.json['temperature']),
             "year": request.json['year'],
             "month": request.json['month'],
@@ -151,7 +161,9 @@ def test():
             "hour": request.json['hour'],
             "minute": request.json['minute'],
             "second": request.json['second'],
-            "id": request.json['id']
+            "distance": request.json['distance'],
+            "mac": request.json['mac'],
+            "id": id
         }
 
         # Upload the data to the database
@@ -165,6 +177,6 @@ def test():
 if __name__ == "__main__":
     app.run(
         debug=True,
-        host="192.168.1.8",
+        host="192.168.1.5",
         port=5000
     )
